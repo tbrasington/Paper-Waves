@@ -20,7 +20,7 @@ var playground = function()
 	{
 		var squiggle_1 = new squiggle();
 			squiggle_1.creator = that;
-			squiggle_1.count_limit = Math.floor(Math.random()*150 + Math.random()*100);
+			squiggle_1.count_limit = Math.floor(Math.random()*10 + Math.random()*100);
 			squiggle_1.create()
 	}
 }
@@ -53,7 +53,7 @@ var squiggle = function()
 			
 				// Get the creator of the squiggle to create a new squiggle
 				setTimeout(function() { 
-				that.creator.make_squiggle(); 
+					that.creator.make_squiggle(); 
 				},1000);
 			}
 		}
