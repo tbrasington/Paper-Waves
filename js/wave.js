@@ -7,12 +7,9 @@ var playground = function()
 	{
 		// set up paper js for js use
 		paper.setup(selector);
-	
-		var wave = that.make_wave()
 		
-			
-
-			
+		// create a wave object
+		var wave = that.make_wave()		
 	},
 	/*
 	* Creates a squiggle
@@ -23,8 +20,8 @@ var playground = function()
 		var wave_1 = new wave();
 			wave_1.creator = that;
 			wave_1.create()
-			
-			return wave_1;
+		// returns an instance of the wave
+		return wave_1;
 	}
 }
 
@@ -38,14 +35,8 @@ var wave = function()
 	this.path = null;
 	this.total_paths = 0;
 	this.tool = new Tool();
-	 
-	this.curviness =  0.5,
-	this.distance =10,
-	this.offset = 10,
 	this.mul =1, 
-	this.mouseOffset = true,
 	this.last_point = 0,
-	this.count_limit = 0;
 	
 	this.create = function()
 	{	
@@ -69,15 +60,19 @@ var wave = function()
 			that.total_paths++
 			
 		}	
-			
-		var multiplier = 1, next_x_pos=0, next_y_pos=0;
+		// set the limits of the speed
+		var multiplier = 0.25, next_x_pos=0, next_y_pos=0;
 		paper.view.onFrame = function(event)
 		{ 
+			// go through all existing paths to make them jiggle
 			for (var a = 0; a < that.total_paths; a++) {
 				try { 
+					// Segments for this point
 					var segments = that.paths[a].segments;
+					// loop through all the point
 					for (var i = 0, l = segments.length; i < l; i++) {
 						
+						// the point
 						var point = segments[i].point;
 						
 						// X positioning
@@ -94,7 +89,6 @@ var wave = function()
 							{
 								point.x = next_x_pos
 							}
-							
 						} 
 							else 
 						{ 
@@ -110,13 +104,11 @@ var wave = function()
 							{	
 								point.x = next_x_pos;
 							}
-						
 						}
 					
-					// Y positioning
-					if(point.positive_y_direction)
+						// Y positioning
+						if(point.positive_y_direction)
 						{
-							
 							next_y_pos = point.y + multiplier;
 							
 							// if the x pos is greater than the original positioning and the limit of the point, set the direction in reverse
@@ -131,8 +123,6 @@ var wave = function()
 						} 
 							else 
 						{ 
-							
-							
 							// Y positioning
 							next_y_pos =  point.y - multiplier;
 							
@@ -145,23 +135,44 @@ var wave = function()
 							{	
 								point.y = next_y_pos;
 							}
-							
 						}
 					}
-						
+					
+					
+					
 				} catch (e) {}
+				/*
+				// adjust circle
+				if(that.paths[a].circle !== undefined)
+				{
+					var last_path_point = that.paths[that.paths.length-1];
+					console.log(last_path_point)
+					var circle_segments = that.paths[a].circle.segments;
+					//console.log(circle_segments)
+					for(var b = 0; b<circle_segments.length; b++)
+					{
+						//console.log(circle_segments)
+						
+						//circle_segments[b].point.x = circle_segments[b].point.x -  10
+						//circle_segments[b].point.y = circle_segments[b].point.y - 10;
+						
+					}
+				}
+				*/
 			}
 		}
 				
 		that.tool.onMouseDrag =  function(event)
 		{ 
-			
+ 			// Add a path
  			that.path.add(event.event.pageX  , event.event.pageY +(30 * that.mul));
+ 			
  			// get the latest point created and add the original x and y values
  			var latest_point = that.path.segments[that.path.segments.length-1].point;
  			// create the custom x and y values
  			latest_point.original_x = latest_point.x;
  			latest_point.original_y = latest_point.y;
+ 			// decide a random limit for each point. This will be from 0 to 15
  			latest_point.y_limit = Math.random()*15;
  			latest_point.x_limit = Math.random()*15;
  			// also add a varible to see if its a positive or negative number
@@ -169,8 +180,20 @@ var wave = function()
  			latest_point.positive_x_direction = false;
  			// get the last point for deciding whether to create a up or down point
   			that.last_point =  event.event.pageX;
-			if(that.mul == 1) { that.mul = -1; } else { that.mul = 1}
+			if(that.mul == 1) { that.mul = -1; } else { that.mul = 1}	
 			 
+		}
+		
+		that.tool.onMouseUp = function(event)
+		{
+			var current_path = that.paths[that.total_paths-1];
+			var segments = current_path.segments;
+			var last_point = segments[segments.length-1].point
+			 
+			current_path.circle = new Path.Circle([last_point.original_x, last_point.original_y] , 40);
+			current_path.circle.original_x = last_point.original_x
+			current_path.circle.original_y = last_point.original_y
+			current_path.circle.strokeColor = 'black';
 		}
 		
 	}
@@ -180,6 +203,4 @@ jQuery(document).ready(function(){
 
 	var nicolas_playground = new playground();
 		nicolas_playground.init('playground');
-	
-
 });
