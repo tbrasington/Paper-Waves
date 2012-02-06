@@ -63,6 +63,8 @@ var squiggle = function()
 	}
 }
 
+
+
 jQuery(document).ready(function(){
 
 	var nicolas_playground = new playground();
