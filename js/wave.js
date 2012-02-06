@@ -70,7 +70,7 @@ var wave = function()
 			
 		}	
 			
-		var multiplier = 1, next_x_pos=0;
+		var multiplier = 1, next_x_pos=0, next_y_pos=0;
 		paper.view.onFrame = function(event)
 		{ 
 			for (var a = 0; a < that.total_paths; a++) {
@@ -80,28 +80,49 @@ var wave = function()
 						
 						var point = segments[i].point;
 						
-						if(point.positive_direction)
+						// X positioning
+						if(point.positive_x_direction)
 						{
-							// X positioning
 							next_x_pos =  point.x + multiplier;
 							
 							// if the x pos is greater than the original positioning and the limit of the point, set the direction in reverse
-						 	if(next_x_pos>=(point.original_x + point.limit))
+						 	if(next_x_pos>=(point.original_x + point.y_limit))
 						 	{ 
-						 		point.positive_direction = false;
+						 		point.positive_x_direction = false;
 							}
 								else
 							{
 								point.x = next_x_pos
 							}
 							
-							// Y positioning
-							next_y_pos =  point.y + multiplier;
+						} 
+							else 
+						{ 
+							// X positioning
+							next_x_pos =  point.x - multiplier;
+							
+							// if the x pos is less than the original positioning and the limit of the point, set the direction in reverse
+						 	if(next_x_pos <= (point.original_x - point.x_limit))
+						 	{ 
+						 		point.positive_x_direction = true;
+							}
+								else
+							{	
+								point.x = next_x_pos;
+							}
+						
+						}
+					
+					// Y positioning
+					if(point.positive_y_direction)
+						{
+							
+							next_y_pos = point.y + multiplier;
 							
 							// if the x pos is greater than the original positioning and the limit of the point, set the direction in reverse
-						 	if(next_y_pos>=(point.original_y + point.limit))
+						 	if(next_y_pos>=(point.original_y + point.y_limit))
 						 	{ 
-						 		point.positive_direction = false;
+						 		point.positive_y_direction = false;
 							}
 								else
 							{
@@ -110,26 +131,15 @@ var wave = function()
 						} 
 							else 
 						{ 
-							// X positioning
-							next_x_pos =  point.x - multiplier;
 							
-							// if the x pos is less than the original positioning and the limit of the point, set the direction in reverse
-						 	if(next_x_pos <= (point.original_x - point.limit))
-						 	{ 
-						 		point.positive_direction = true;
-							}
-								else
-							{	
-								point.x = next_x_pos;
-							}
 							
 							// Y positioning
 							next_y_pos =  point.y - multiplier;
 							
 							// if the y pos is less than the original positioning and the limit of the point, set the direction in reverse
-						 	if(next_y_pos <= (point.original_y - point.limit))
+						 	if(next_y_pos <= (point.original_y - point.y_limit))
 						 	{ 
-						 		point.positive_direction = true;
+						 		point.positive_y_direction = true;
 							}
 								else
 							{	
@@ -152,10 +162,11 @@ var wave = function()
  			// create the custom x and y values
  			latest_point.original_x = latest_point.x;
  			latest_point.original_y = latest_point.y;
- 			latest_point.limit = Math.random()*11;
+ 			latest_point.y_limit = Math.random()*15;
+ 			latest_point.x_limit = Math.random()*15;
  			// also add a varible to see if its a positive or negative number
- 			latest_point.positive_direction = true;
- 			
+ 			latest_point.positive_y_direction = true;
+ 			latest_point.positive_x_direction = false;
  			// get the last point for deciding whether to create a up or down point
   			that.last_point =  event.event.pageX;
 			if(that.mul == 1) { that.mul = -1; } else { that.mul = 1}
