@@ -57,6 +57,7 @@ var wave = function()
 			that.path.strokeColor = 'black';
 			that.last_point = event.event.pageX;
 			that.paths[that.total_paths] = that.path;
+			
 			that.total_paths++
 			
 		}	
@@ -139,26 +140,16 @@ var wave = function()
 					}
 					
 					
-					
-				} catch (e) {}
-				/*
 				// adjust circle
 				if(that.paths[a].circle !== undefined)
 				{
-					var last_path_point = that.paths[that.paths.length-1];
-					console.log(last_path_point)
-					var circle_segments = that.paths[a].circle.segments;
-					//console.log(circle_segments)
-					for(var b = 0; b<circle_segments.length; b++)
-					{
-						//console.log(circle_segments)
-						
-						//circle_segments[b].point.x = circle_segments[b].point.x -  10
-						//circle_segments[b].point.y = circle_segments[b].point.y - 10;
-						
-					}
+					var last_point_in_segment = (segments[segments.length-1].point);
+					that.paths[a].circle.position = new Point(last_point_in_segment.x,last_point_in_segment.y);
 				}
-				*/
+					
+					
+				} catch (e) {}
+				
 			}
 		}
 				
@@ -183,17 +174,18 @@ var wave = function()
 			if(that.mul == 1) { that.mul = -1; } else { that.mul = 1}	
 			 
 		}
-		
+		var segment_name = 0;
 		that.tool.onMouseUp = function(event)
 		{
 			var current_path = that.paths[that.total_paths-1];
 			var segments = current_path.segments;
 			var last_point = segments[segments.length-1].point
-			 
+			last_point.name = "point-"  + segment_name
 			current_path.circle = new Path.Circle([last_point.original_x, last_point.original_y] , 40);
 			current_path.circle.original_x = last_point.original_x
 			current_path.circle.original_y = last_point.original_y
 			current_path.circle.strokeColor = 'black';
+			segment_name++;
 		}
 		
 	}
