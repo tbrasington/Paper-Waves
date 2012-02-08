@@ -43,7 +43,7 @@ var wave = function()
 		// create a new path and tool
 		that.path = new Path();
 		that.tool = new Tool();
-		that.tool.minDistance = 20;
+		that.tool.minDistance = 5;
 		that.path.strokeColor = 'black';
 		
 		// add the path to the list of paths for the animations
@@ -145,12 +145,11 @@ var wave = function()
 		var mul = 1;
 		
 		var values = {
-			curviness: 0.5,
+			curviness:0.5,
 			distance: tool.minDistance,
-			offset: 30,
+			offset: 5,
 			mouseOffset: true
 		};
-				
 		that.tool.onMouseMove =  function(event)
 		{ 
  			// Add a path
@@ -189,6 +188,7 @@ var wave = function()
   			that.last_point =  event.event.pageX;
 			if(that.mul == 1) { that.mul = -1; } else { that.mul = 1}	
 			 
+ 			
 		}
 		var segment_name = 0;
 		that.tool.onMouseDown =  function(event)
