@@ -14,5 +14,34 @@ html, body {
 	background-color: #ccc;
 	height: 100%;
 	width: 100%;
+	overflow: visible;
+}
+
+#content
+{
+	position: relative;
+	float: none;
+	width: 600px;
+	height: 600px;
+	background-color: rgba(255,255,255,0.5	);
+	display: block;	
+	z-index: 2;
+	margin: auto;
+}
+
+#canvas-container
+{
+	position: absolute;
+	width: 100%;
+	height: 100%;
 	overflow: hidden;
+	z-index: 1;
+	top:0px;
+	left: 0px;
+}
+
+#playground
+{
+	width: 100%;
+	height: 100%;
 }
