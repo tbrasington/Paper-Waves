@@ -38,6 +38,8 @@ var wave = function()
 	this.mul =1, 
 	this.last_point = 0,
 	
+	this.frame_counter = 0,
+	
 	this.create = function()
 	{	
 		// create a new path and tool
@@ -52,81 +54,90 @@ var wave = function()
 			
 		// set the limits of the speed
 		var multiplier = 0.25, next_x_pos=0, next_y_pos=0;
+	 
 		paper.view.onFrame = function(event)
 		{ 
-		 
-			// Segments for this point
-			try { 
-				var segments = that.paths[that.total_paths-1].segments;
-				// loop through all the point
-				for (var i = 0, l = segments.length; i < l; i++) {
-					
-					// the point
-					var point = segments[i].point;
-					
-					// X positioning
-					if(point.positive_x_direction)
-					{
-						next_x_pos =  point.x + multiplier;
+			// increase the frame counter
+			that.frame_counter++; 
+			// if the frame counter has hit the limit move it. 
+		 	if(that.frame_counter>=5)
+		 	{
+		 		// reset the counter
+		 		that.frame_counter=0;
+				// Segments for this point
+				try { 
+					var segments = that.paths[that.total_paths-1].segments;
+					// loop through all the point
+					for (var i = 0, l = segments.length; i < l; i++) {
 						
-						// if the x pos is greater than the original positioning and the limit of the point, set the direction in reverse
-					 	if(next_x_pos>=(point.original_x + point.y_limit))
-					 	{ 
-					 		point.positive_x_direction = false;
-						}
-							else
-						{
-							point.x = next_x_pos
-						}
-					} 
-						else 
-					{ 
+						// the point
+						var point = segments[i].point;
+						
 						// X positioning
-						next_x_pos =  point.x - multiplier;
-						
-						// if the x pos is less than the original positioning and the limit of the point, set the direction in reverse
-					 	if(next_x_pos <= (point.original_x - point.x_limit))
-					 	{ 
-					 		point.positive_x_direction = true;
-						}
-							else
-						{	
-							point.x = next_x_pos;
-						}
-					}
-				
-					// Y positioning
-					if(point.positive_y_direction)
-					{
-						next_y_pos = point.y + multiplier;
-						
-						// if the x pos is greater than the original positioning and the limit of the point, set the direction in reverse
-					 	if(next_y_pos>=(point.original_y + point.y_limit))
-					 	{ 
-					 		point.positive_y_direction = false;
-						}
-							else
+						if(point.positive_x_direction)
 						{
-							point.y = next_y_pos
+							next_x_pos =  point.x + multiplier;
+							
+							// if the x pos is greater than the original positioning and the limit of the point, set the direction in reverse
+						 	if(next_x_pos>=(point.original_x + point.y_limit))
+						 	{ 
+						 		point.positive_x_direction = false;
+							}
+								else
+							{
+								point.x = next_x_pos
+							}
+						} 
+							else 
+						{ 
+							// X positioning
+							next_x_pos =  point.x - multiplier;
+							
+							// if the x pos is less than the original positioning and the limit of the point, set the direction in reverse
+						 	if(next_x_pos <= (point.original_x - point.x_limit))
+						 	{ 
+						 		point.positive_x_direction = true;
+							}
+								else
+							{	
+								point.x = next_x_pos;
+							}
 						}
-					} 
-						else 
-					{ 
+					
 						// Y positioning
-						next_y_pos =  point.y - multiplier;
-						
-						// if the y pos is less than the original positioning and the limit of the point, set the direction in reverse
-					 	if(next_y_pos <= (point.original_y - point.y_limit))
-					 	{ 
-					 		point.positive_y_direction = true;
-						}
-							else
-						{	
-							point.y = next_y_pos;
+						if(point.positive_y_direction)
+						{
+							next_y_pos = point.y + multiplier;
+							
+							// if the x pos is greater than the original positioning and the limit of the point, set the direction in reverse
+						 	if(next_y_pos>=(point.original_y + point.y_limit))
+						 	{ 
+						 		point.positive_y_direction = false;
+							}
+								else
+							{
+								point.y = next_y_pos
+							}
+						} 
+							else 
+						{ 
+							// Y positioning
+							next_y_pos =  point.y - multiplier;
+							
+							// if the y pos is less than the original positioning and the limit of the point, set the direction in reverse
+						 	if(next_y_pos <= (point.original_y - point.y_limit))
+						 	{ 
+						 		point.positive_y_direction = true;
+							}
+								else
+							{	
+								point.y = next_y_pos;
+							}
 						}
 					}
-				}
-			} catch(e) {}
+				} catch(e) {}
+				
+			}
 		}
 		
 		var mul = 1;
@@ -182,7 +193,6 @@ var wave = function()
 		// Bind the tool down event to the window mouse down event instead of the tool event
 		jQuery(window).mousedown(function(e){
 		
-			console.log('down')
 			var current_path = that.paths[that.total_paths-1];
 			var segments = current_path.segments;
 			var last_point = segments[segments.length-1].point
